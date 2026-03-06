@@ -10,10 +10,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Place {
+    @Id // internal surrogate key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
-    @Column(name = "place_id", columnDefinition = "uuid")
-    private UUID placeId;
+    @Column(name = "place_uuid", nullable = false, unique = true)
+    private UUID placeUuid;
 
     @Column(nullable = false)
     private String name;

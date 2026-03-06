@@ -2,32 +2,31 @@ package com.example.tourism_app.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "interactions")
-@IdClass(Interaction.InteractionId.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Interaction {
-
     @Id
-    @Column(name = "user_id", columnDefinition = "uuid")
-    private UUID userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
-    @Column(name = "place_id", columnDefinition = "uuid")
-    private UUID placeId;
+    @Column(name = "user_uuid", nullable = false)
+    private UUID userUuid;
+
+    @Column(name = "place_uuid", nullable = false)
+    private UUID placeUuid;
+
+    @ManyToOne
+    @JoinColumn(name = "user_internal_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "place_internal_id", referencedColumnName = "id")
+    private Place place;
 
     private Integer interaction;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class InteractionId implements Serializable {
-        private UUID userId;
-        private UUID placeId;
-    }
 }

@@ -10,10 +10,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+    @Id // internal surrogate key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
-    @Column(name = "user_id", columnDefinition = "uuid")
-    private UUID userId;
+    @Column(name = "user_id", nullable = false, unique = true)
+    private UUID userUuid;
 
     private String email;
 }
