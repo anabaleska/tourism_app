@@ -29,4 +29,52 @@ public class Interaction {
     private Place place;
 
     private Integer interaction;
+
+    public Interaction(UUID userUuid, UUID placeUuid, User user, Place place, Integer interaction) {
+        this.userUuid = userUuid;
+        this.placeUuid = placeUuid;
+        this.interaction = interaction;
+        this.user = user;
+        this.place = place;
+    }
+
+    public UUID getUserUuid() {
+        return userUuid;
+    }
+
+    public void setUserUuid(UUID userUuid) {
+        this.userUuid = userUuid;
+    }
+
+    public UUID getPlaceUuid() {
+        return placeUuid;
+    }
+
+    public void setPlaceUuid(UUID placeUuid) {
+        this.placeUuid = placeUuid;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    public Integer getInteraction() {
+        return interaction;
+    }
+
+    public void setInteraction(Integer interaction) {
+        this.interaction = interaction;
+    }
 }

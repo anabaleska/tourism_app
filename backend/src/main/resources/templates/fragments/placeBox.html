@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="placeBox(place)" class="col" th:if="${place != null}">
+    <article class="card h-100 shadow-sm border-0">
+        <img th:if="${place.imageUrl != null and !#strings.isEmpty(place.imageUrl)}"
+             th:src="${place.imageUrl}"
+             th:alt="${place.name}"
+             class="card-img-top"
+             style="height: 220px; object-fit: cover;"/>
+
+        <div th:if="${place.imageUrl == null or #strings.isEmpty(place.imageUrl)}"
+             class="d-flex align-items-center justify-content-center bg-light text-secondary"
+             style="height: 220px;">
+            <div class="text-center">
+                <i class="bi bi-image fs-1"></i>
+                <div>No image available</div>
+            </div>
+        </div>
+
+        <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title mb-0" th:text="${place.name}">Place name</h5>
+                <span class="badge text-bg-warning" th:if="${place.rating != null}">
+                    <i class="bi bi-star-fill me-1"></i><span th:text="${#numbers.formatDecimal(place.rating, 1, 1)}">4.5</span>
+                </span>
+            </div>
+
+            <div class="mb-2">
+                <span class="badge text-bg-primary me-1" th:if="${place.category != null and !#strings.isEmpty(place.category)}" th:text="${place.category}">Category</span>
+                <span class="badge text-bg-secondary" th:if="${place.type != null and !#strings.isEmpty(place.type)}" th:text="${place.type}">Type</span>
+            </div>
+
+            <p class="text-muted small mb-2" th:if="${(place.place != null and !#strings.isEmpty(place.place)) or (place.municipality != null and !#strings.isEmpty(place.municipality))}">
+                <i class="bi bi-geo-alt me-1"></i>
+                <span th:text="${(place.place != null and !#strings.isEmpty(place.place)) ? place.place : ''}">Place</span>
+                <span th:if="${place.place != null and !#strings.isEmpty(place.place) and place.municipality != null and !#strings.isEmpty(place.municipality)}">, </span>
+                <span th:text="${(place.municipality != null and !#strings.isEmpty(place.municipality)) ? place.municipality : ''}">Municipality</span>
+            </p>
+
+            <p class="card-text mb-3" th:if="${place.description != null and !#strings.isEmpty(place.description)}" th:text="${place.description}">
+                Description
+            </p>
+            <p class="card-text mb-3 text-muted" th:if="${place.description == null or #strings.isEmpty(place.description)}">
+                No description available.
+            </p>
+
+            <div class="mt-auto small text-muted">
+                <div th:if="${place.price != null}"><i class="bi bi-cash-coin me-1"></i>Price level: <span th:text="${place.price}">0</span></div>
+                <div th:if="${place.timeToVisit != null}"><i class="bi bi-clock me-1"></i>Visit time: <span th:text="${place.timeToVisit}">0</span> min</div>
+                <div th:if="${place.placeUuid != null}"><i class="bi bi-hash me-1"></i><span th:text="${place.placeUuid}">UUID</span></div>
+            </div>
+        </div>
+    </article>
+</div>
+</body>
+</html>
+

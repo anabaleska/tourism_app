@@ -1,0 +1,17 @@
+## Comment below when testing and uncomment app properties
+#spring:
+#  datasource:
+#    url: #
+#    username: #
+#    password: #
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#      dialect : org.hibernate.dialect.SQLServer2012Dialect
+#
+#server:
+#  port: 8080
+#
+#
+#

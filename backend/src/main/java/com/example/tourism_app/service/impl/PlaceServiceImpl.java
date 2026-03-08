@@ -1,0 +1,57 @@
+package com.example.tourism_app.service.impl;
+
+import com.example.tourism_app.model.Place;
+import com.example.tourism_app.repository.jpa.PlaceRepositoryJpa;
+import com.example.tourism_app.service.PlaceService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class PlaceServiceImpl implements PlaceService {
+
+    private final PlaceRepositoryJpa placeRepositoryJpa;
+
+    public PlaceServiceImpl(PlaceRepositoryJpa placeRepositoryJpa) {
+        this.placeRepositoryJpa = placeRepositoryJpa;
+    }
+
+    @Override
+    public Place getPlaceById(Long id) {
+        return placeRepositoryJpa.getPlaceById(id);
+    }
+
+    @Override
+    public Place createPlace(UUID placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
+        Place newPlace = new Place(placeUuid, name, category, type, place, municipality, lat, lng, rating, price, timeToVisit, tags, description, nameNormalized, modelText, imageUrl);
+        placeRepositoryJpa.save(newPlace);
+
+        return newPlace;
+    }
+
+    @Override
+    public Place updatePlace(Long id, UUID placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
+        Place oldPlace = placeRepositoryJpa.getPlaceById(id);
+
+        oldPlace.setPlaceUuid(placeUuid);oldPlace.setName(name);oldPlace.setCategory(category);oldPlace.setType(type);
+        oldPlace.setPlace(place);oldPlace.setMunicipality(municipality);oldPlace.setLat(lat);oldPlace.setLng(lng);
+        oldPlace.setRating(rating);oldPlace.setPrice(price);oldPlace.setTimeToVisit(timeToVisit);oldPlace.setTags(tags);
+        oldPlace.setDescription(description);oldPlace.setNameNormalized(nameNormalized);oldPlace.setModelText(modelText);
+        oldPlace.setImageUrl(imageUrl);
+
+        placeRepositoryJpa.save(oldPlace);
+
+        return oldPlace;
+    }
+
+    @Override
+    public void deletePlace(Long id) {
+        placeRepositoryJpa.deleteById(id);
+    }
+
+    @Override
+    public List<Place> listPlaces() {
+        return placeRepositoryJpa.findAll();
+    }
+}
