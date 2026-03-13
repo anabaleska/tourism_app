@@ -67,6 +67,10 @@ public class Place {
 
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public UUID getPlaceUuid() {
         return placeUuid;
     }
