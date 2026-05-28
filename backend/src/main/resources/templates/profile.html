@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="theme-page profile-page">
+<div class="page-shell">
+    <div th:replace="fragments/topbars :: site-header"></div>
+
+    <main class="page-content">
+        <section class="profile-hero">
+            <div class="container">
+                <div class="profile-hero-card">
+                    <div class="profile-avatar">
+                        <span><i class="bi bi-person-fill"></i></span>
+<!--                        <span th:text="${user != null ? #strings.toUpperCase(#strings.substring(user.username,0,1)) : 'U'}">U</span>-->
+                    </div>
+                    <div class="profile-meta">
+                        <div>
+                            <div class="profile-label">username</div>
+                            <div class="profile-value" th:text="${user != null ? user.username : 'Guest'}">username</div>
+                        </div>
+                        <div>
+                            <div class="profile-label">email</div>
+                            <div class="profile-value" th:text="${user != null ? user.email : 'Unavailable'}">email</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="profile-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h2 class="section-title">Favorite places</h2>
+                    <span class="section-pill" th:if="${favorites != null}" th:text="${#lists.size(favorites)} + ' places'">0 places</span>
+                </div>
+
+                <div class="alert alert-info" th:if="${favorites == null or #lists.isEmpty(favorites)}">
+                    <i class="bi bi-info-circle me-1"></i>
+                    No favorite places yet.
+                </div>
+
+                <div class="places-grid" th:if="${favorites != null and !#lists.isEmpty(favorites)}">
+                    <th:block th:each="favorite : ${favorites}">
+                        <a th:if="${favorite.place != null}" th:href="@{/places/{id}(id=${favorite.place.id})}" class="place-card-wrapper">
+                            <div th:replace="~{fragments/placeBox :: placeBox(${favorite.place})}"></div>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+
+        <section class="profile-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h2 class="section-title">Settings</h2>
+                </div>
+
+                <div class="profile-settings-grid">
+                    <div class="profile-card">
+                        <h3 class="profile-card-title">Change Password</h3>
+                        <form action="/users/updatePW" method="post" class="profile-form">
+                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                            <div class="profile-field">
+                                <label class="profile-label" for="new-password">new password</label>
+                                <input type="text" class="profile-input" id="new-password" name="password"
+                                       placeholder="New Password" required>
+                            </div>
+
+                            <div class="profile-field">
+                                <label class="profile-label" for="new-cpassword">confirm password</label>
+                                <input type="text" class="profile-input" id="new-cpassword" name="cpassword"
+                                       placeholder="Password you entered above" required>
+                            </div>
+
+                            <div class="profile-actions">
+                                <button type="submit" class="profile-button">Submit</button>
+                                <a href="javascript:history.back()" class="profile-button secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3 class="profile-card-title">Delete Account</h3>
+                        <form action="/users/deleteAccount" method="post" class="profile-form">
+                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                            <div class="profile-field">
+                                <label class="profile-label" for="delete-password">current password</label>
+                                <input type="text" class="profile-input" id="delete-password" name="password"
+                                       placeholder="current password" required>
+                            </div>
+
+                            <div class="profile-field">
+                                <label class="profile-label" for="delete-cpassword">confirm password</label>
+                                <input type="text" class="profile-input" id="delete-cpassword" name="cpassword"
+                                       placeholder="current password" required>
+                            </div>
+
+                            <div class="profile-actions">
+                                <button type="submit" class="profile-button">Submit</button>
+                                <a href="javascript:history.back()" class="profile-button secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="fragments/topbars :: site-footer"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

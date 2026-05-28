@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -65,5 +66,40 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("successMessage", "Registration successful! You may now log in.");
         return "redirect:/login";
     }
+
+    @GetMapping("/users/settings")
+    public String updatePasswordPage() {return "settings"; }
+
+    @PostMapping("/users/updatePW")
+    public String updatePassword(@RequestParam String password,
+                                 @RequestParam String cpassword) {
+
+        if(!password.equals(cpassword)){
+            return "redirect:/settings?error=PasswordsDontMatch";
+        }
+
+        if(!userService.updatePassword(userService.getCurrentUserId(), password, cpassword)){
+            return "redirect:/settings?error=failedToUpdatePassword";
+        }
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/users/deleteAccount")
+    public String deleteUser(@RequestParam String password,
+                             @RequestParam String cpassword) {
+
+        if(!password.equals(cpassword)){
+            return "redirect:/users/settings?error=PasswordsDontMatch";
+        } else {
+            if(userService.deleteUser(userService.getCurrentUserId(), password)){
+                return "redirect:/";
+            } else {
+                return "redirect:/users/settings?error=IncorrectPassword";
+            }
+
+        }
+    }
+
 }
 

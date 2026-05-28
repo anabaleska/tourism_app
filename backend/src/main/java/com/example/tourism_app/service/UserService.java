@@ -11,4 +11,8 @@ public interface UserService {
     void registerUser(UserRegistrationDto dto);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+
+    boolean updatePassword(Long currentUserId, String password, String cpassword);
+
+    boolean deleteUser(Long currentUserId, String password);
 }

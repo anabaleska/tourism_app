@@ -12,4 +12,5 @@ public interface InteractionService {
     Interaction updateInteraction(Long id, UUID userUuid, UUID placeUuid, Integer interaction);
     void deleteInteraction(Long id);
     List<Interaction> listInteractions();
+    List<Interaction> findAllUserInteractions(Long userId);
 }

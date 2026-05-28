@@ -1,6 +1,7 @@
 package com.example.tourism_app.web.controller;
 
 import com.example.tourism_app.model.Place;
+import com.example.tourism_app.model.User;
 import com.example.tourism_app.service.InteractionService;
 import com.example.tourism_app.service.PlaceService;
 import com.example.tourism_app.service.UserService;
@@ -74,7 +75,17 @@ public class PageController {
         return "favourites";
     }
 
+    @GetMapping("/profile")
+    public String profile(Model model) {
+        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
+        user.ifPresent(userBap -> model.addAttribute("user", userBap));
+        model.addAttribute("username", user.get().getUsername());
+        model.addAttribute("email", user.get().getUsername());
+//      list favorites from user
+        model.addAttribute("favorites", interactionService.findAllUserInteractions(userService.getCurrentUserId()));
 
+        return "profile"; // will load resources/templates/profile.html
+    }
 
 
 

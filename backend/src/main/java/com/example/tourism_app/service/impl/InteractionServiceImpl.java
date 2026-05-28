@@ -71,4 +71,9 @@ public class InteractionServiceImpl implements InteractionService {
     public List<Interaction> listInteractions() {
         return interactionRepositoryJpa.findAll();
     }
+
+    @Override
+    public List<Interaction> findAllUserInteractions(Long userId) {
+        return interactionRepositoryJpa.findAllByUser_Id(userId);
+    }
 }

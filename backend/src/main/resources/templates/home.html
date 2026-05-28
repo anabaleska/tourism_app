@@ -6,133 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .place-card-wrapper {
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-
-        .place-card-wrapper:hover {
-            transform: translateY(-5px);
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .place-card-wrapper:hover .card {
-            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
-        }
-
-        .places-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 576px) {
-            .places-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (min-width: 577px) and (max-width: 768px) {
-            .places-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .places-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (min-width: 1025px) and (max-width: 1400px) {
-            .places-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        @media (min-width: 1401px) {
-            .places-grid {
-                grid-template-columns: repeat(5, 1fr);
-            }
-        }
-
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 3rem;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .pagination-info {
-            text-align: center;
-            margin-bottom: 1rem;
-            color: #6c757d;
-            font-size: 0.95rem;
-        }
-    </style>
+    <link href="/css/styles.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body class="theme-page home-page">
+<div class="page-shell">
+    <div th:replace="fragments/topbars :: site-header"></div>
 
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Explore Places</h1>
-        <span class="badge text-bg-dark" th:if="${totalPlaces != null}" th:text="${totalPlaces} + ' places'">0 places</span>
-    </div>
+    <main class="page-content">
+        <section class="home-hero">
+            <div class="container">
+                <h1>Say "Halo" to Ohrid &amp; Struga!</h1>
+                <p>Explore places you can visit in Ohrid, Struga or both!</p>
+                <span class="hero-badge" th:if="${totalPlaces != null}" th:text="${totalPlaces} + ' places'">0 places</span>
+            </div>
+        </section>
 
-    <div class="alert alert-info" th:if="${places == null or #lists.isEmpty(places)}">
-        <i class="bi bi-info-circle me-1"></i>
-        No places found right now.
-    </div>
+        <div class="container py-4">
+            <div class="section-heading">
+                <h2 class="section-title">Explore Places</h2>
+                <span class="section-pill" th:if="${totalPlaces != null}" th:text="${totalPlaces} + ' places'">0 places</span>
+            </div>
 
-    <!-- Places Grid -->
-    <div class="places-grid" th:if="${places != null and !#lists.isEmpty(places)}">
-        <th:block th:each="place : ${places}">
-            <a th:if="${place != null}" th:href="@{/places/{id}(id=${place.id})}" class="place-card-wrapper">
-                <div th:replace="~{fragments/placeBox :: placeBox(${place})}"></div>
-            </a>
-        </th:block>
-    </div>
+            <div class="alert alert-info" th:if="${places == null or #lists.isEmpty(places)}">
+                <i class="bi bi-info-circle me-1"></i>
+                No places found right now.
+            </div>
 
-    <!-- Pagination Controls -->
-    <div th:if="${totalPages != null and totalPages > 1}">
-        <div class="pagination-info">
-            Page <span th:text="${currentPage}">1</span> of <span th:text="${totalPages}">1</span>
-        </div>
-
-        <nav aria-label="Page navigation" class="pagination-container">
-            <!-- Previous Button -->
-            <a th:if="${currentPage > 1}" th:href="@{/(page=${currentPage - 1})}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-chevron-left"></i> Previous
-            </a>
-            <span th:if="${currentPage == 1}" class="btn btn-outline-primary btn-sm disabled">
-                <i class="bi bi-chevron-left"></i> Previous
-            </span>
-
-            <!-- Page Numbers -->
-            <div class="d-flex gap-1 flex-wrap justify-content-center">
-                <th:block th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
-                    <a th:if="${pageNum != currentPage}" th:href="@{/(page=${pageNum})}" class="btn btn-outline-secondary btn-sm" th:text="${pageNum}">1</a>
-                    <span th:if="${pageNum == currentPage}" class="btn btn-primary btn-sm active" th:text="${pageNum}">1</span>
+            <!-- Places Grid -->
+            <div class="places-grid" th:if="${places != null and !#lists.isEmpty(places)}">
+                <th:block th:each="place : ${places}">
+                    <a th:if="${place != null}" th:href="@{/places/{id}(id=${place.id})}" class="place-card-wrapper">
+                        <div th:replace="~{fragments/placeBox :: placeBox(${place})}"></div>
+                    </a>
                 </th:block>
             </div>
 
-            <!-- Next Button -->
-            <a th:if="${currentPage < totalPages}" th:href="@{/(page=${currentPage + 1})}" class="btn btn-outline-primary btn-sm">
-                Next <i class="bi bi-chevron-right"></i>
-            </a>
-            <span th:if="${currentPage == totalPages}" class="btn btn-outline-primary btn-sm disabled">
-                Next <i class="bi bi-chevron-right"></i>
-            </span>
-        </nav>
-    </div>
-</div>
+            <!-- Pagination Controls -->
+            <div th:if="${totalPages != null and totalPages > 1}">
+                <div class="pagination-info">
+                    Page <span th:text="${currentPage}">1</span> of <span th:text="${totalPages}">1</span>
+                </div>
 
+                <nav aria-label="Page navigation" class="pagination-container">
+                    <!-- Previous Button -->
+                    <a th:if="${currentPage > 1}" th:href="@{/(page=${currentPage - 1})}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </a>
+                    <span th:if="${currentPage == 1}" class="btn btn-outline-primary btn-sm disabled">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </span>
+
+                    <!-- Page Numbers -->
+                    <div class="d-flex gap-1 flex-wrap justify-content-center">
+                        <th:block th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+                            <a th:if="${pageNum != currentPage}" th:href="@{/(page=${pageNum})}" class="btn btn-outline-secondary btn-sm" th:text="${pageNum}">1</a>
+                            <span th:if="${pageNum == currentPage}" class="btn btn-primary btn-sm active" th:text="${pageNum}">1</span>
+                        </th:block>
+                    </div>
+
+                    <!-- Next Button -->
+                    <a th:if="${currentPage < totalPages}" th:href="@{/(page=${currentPage + 1})}" class="btn btn-outline-primary btn-sm">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                    <span th:if="${currentPage == totalPages}" class="btn btn-outline-primary btn-sm disabled">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </span>
+                </nav>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="fragments/topbars :: site-footer"></div>
+</div>
 </body>
 </html>

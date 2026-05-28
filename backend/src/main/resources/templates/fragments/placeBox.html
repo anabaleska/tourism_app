@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="placeBox(place)" class="col" th:if="${place != null}">
+<div th:fragment="placeBox(place)" class="col h-100" th:if="${place != null}">
     <article class="card h-100 shadow-sm border-0">
         <img th:if="${place.imageUrl != null and !#strings.isEmpty(place.imageUrl)}"
              th:src="${place.imageUrl}"
@@ -38,10 +38,10 @@
                 <span th:text="${(place.municipality != null and !#strings.isEmpty(place.municipality)) ? place.municipality : ''}">Municipality</span>
             </p>
 
-            <p class="card-text mb-3" th:if="${place.description != null and !#strings.isEmpty(place.description)}" th:text="${place.description}">
+            <p class="card-text place-card-description mb-3" th:if="${place.description != null and !#strings.isEmpty(place.description)}" th:text="${place.description}">
                 Description
             </p>
-            <p class="card-text mb-3 text-muted" th:if="${place.description == null or #strings.isEmpty(place.description)}">
+            <p class="card-text place-card-description mb-3 text-muted" th:if="${place.description == null or #strings.isEmpty(place.description)}">
                 No description available.
             </p>
 

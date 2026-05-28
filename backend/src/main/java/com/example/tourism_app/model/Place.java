@@ -7,7 +7,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "places")
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 public class Place {
     @Id // internal surrogate key
