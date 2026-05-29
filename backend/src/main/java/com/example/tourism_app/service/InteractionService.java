@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface InteractionService {
     Interaction getInteractionById(Long id);
-    Interaction createInteraction(UUID userUuid, UUID placeUuid, Integer interaction);
-    Interaction updateInteraction(Long id, UUID userUuid, UUID placeUuid, Integer interaction);
+    Interaction createInteraction(String userUuid, String placeUuid, Integer interaction);
+    Interaction updateInteraction(Long id, String userUuid, String placeUuid, Integer interaction);
     void deleteInteraction(Long id);
     List<Interaction> listInteractions();
-    List<Interaction> findAllUserInteractions(Long userId);
+    List<Interaction> findAllUserInteractions(String userId);
 }

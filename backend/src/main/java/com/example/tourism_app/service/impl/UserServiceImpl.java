@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,15 +24,14 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Long getCurrentUserId() {
+    public String getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getId();
     }
-
     @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepositoryJpa.findById(getCurrentUserId());
+    public Optional<User> getUserById(String id) {
+        return userRepositoryJpa.findById(id);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         user.setRole(Role.USER);
-        user.setUserUuid(java.util.UUID.randomUUID());
+        user.setUserUuid(UUID.randomUUID().toString());
 
 //        if (dto.getSelectedRole().equals(Role.PROFESSIONAL)) {
 //            user.setRole(Role.PENDING_PROFESSIONAL);
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updatePassword(Long id, String newPassword, String newConfPassword) {
+    public boolean updatePassword(String id, String newPassword, String newConfPassword) {
         if(newPassword.equals(newConfPassword)){
             Optional<User> u = userRepositoryJpa.findById(id);
             u.ifPresent(user -> user.setPassword(passwordEncoder.encode(newPassword)));
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(Long id, String newPassword) {
+    public boolean deleteUser(String id, String newPassword) {
         User u = userRepositoryJpa.findById(id).get();
         if(passwordEncoder.matches(newPassword, u.getPassword())){
             userRepositoryJpa.deleteById(id);

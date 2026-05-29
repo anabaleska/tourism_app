@@ -9,12 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class TourismAppApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TourismAppApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TourismAppApplication.class, args);
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(10);
-	}
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
+    }
+
 }

@@ -13,35 +13,23 @@ import jakarta.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Id // internal surrogate key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    @Id
     @Column(name = "user_id", nullable = false, unique = true)
-    private UUID userUuid;
+    private String id;
 
-    @NotBlank
-    @Size(min = 6, max = 20)
-    @Column(nullable = false, unique = true)
+
+    @Column(unique = true)
     private String username;
 
-    @NotBlank
     @Email
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
-    @Column(nullable = false)
     private String password; // default changeme123
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role = Role.USER;
-
-    public Long getId() {
-        return id;
-    }
 
     public Role getRole() {
         return role;
@@ -67,12 +55,12 @@ public class User {
         this.password = password;
     }
 
-    public UUID getUserUuid() {
-        return userUuid;
+    public String getId() {
+        return id;
     }
 
-    public void setUserUuid(UUID userUuid) {
-        this.userUuid = userUuid;
+    public void setUserUuid(String userUuid) {
+        this.id = userUuid;
     }
 
     public String getEmail() {

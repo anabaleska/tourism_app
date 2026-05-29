@@ -6,6 +6,7 @@ import com.example.tourism_app.service.PlaceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,12 +19,12 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public Place getPlaceById(Long id) {
-        return placeRepositoryJpa.getPlaceById(id);
+    public Optional<Place> getPlaceById(String id) {
+        return placeRepositoryJpa.findById(id);
     }
 
     @Override
-    public Place createPlace(UUID placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
+    public Place createPlace(String placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
         Place newPlace = new Place(placeUuid, name, category, type, place, municipality, lat, lng, rating, price, timeToVisit, tags, description, nameNormalized, modelText, imageUrl);
         placeRepositoryJpa.save(newPlace);
 
@@ -32,21 +33,27 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public Place updatePlace(Long id, UUID placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
-        Place oldPlace = placeRepositoryJpa.getPlaceById(id);
-
-        oldPlace.setPlaceUuid(placeUuid);oldPlace.setName(name);oldPlace.setCategory(category);oldPlace.setType(type);
-        oldPlace.setPlace(place);oldPlace.setMunicipality(municipality);oldPlace.setLat(lat);oldPlace.setLng(lng);
-        oldPlace.setRating(rating);oldPlace.setPrice(price);oldPlace.setTimeToVisit(timeToVisit);oldPlace.setTags(tags);
-        oldPlace.setDescription(description);oldPlace.setNameNormalized(nameNormalized);oldPlace.setModelText(modelText);
-        oldPlace.setImageUrl(imageUrl);
-
-        placeRepositoryJpa.save(oldPlace);
-
-        return oldPlace;
+        return null;
     }
 
+
+//    @Override
+//    public Place updatePlace(UUID id, UUID placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
+//        Place oldPlace = placeRepositoryJpa.findById(id);
+//
+//        oldPlace.setPlaceUuid(placeUuid);oldPlace.setName(name);oldPlace.setCategory(category);oldPlace.setType(type);
+//        oldPlace.setPlace(place);oldPlace.setMunicipality(municipality);oldPlace.setLat(lat);oldPlace.setLng(lng);
+//        oldPlace.setRating(rating);oldPlace.setPrice(price);oldPlace.setTimeToVisit(timeToVisit);oldPlace.setTags(tags);
+//        oldPlace.setDescription(description);oldPlace.setNameNormalized(nameNormalized);oldPlace.setModelText(modelText);
+//        oldPlace.setImageUrl(imageUrl);
+//
+//        placeRepositoryJpa.save(oldPlace);
+//
+//        return oldPlace;
+//    }
+
     @Override
-    public void deletePlace(Long id) {
+    public void deletePlace(String id) {
         placeRepositoryJpa.deleteById(id);
     }
 
