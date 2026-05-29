@@ -1,5 +1,6 @@
 package com.example.tourism_app.web.controller;
 
+import com.example.tourism_app.model.Interaction;
 import com.example.tourism_app.model.Place;
 import com.example.tourism_app.model.User;
 import com.example.tourism_app.service.InteractionService;
@@ -8,8 +9,9 @@ import com.example.tourism_app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class PageController {
@@ -50,11 +52,12 @@ public class PageController {
 
     //  Get place page
     @GetMapping("/places/{placeId}")
-    public String PlacePage(@PathVariable Long placeId, Model model) {
+    public String PlacePage(@PathVariable String placeId, Model model) {
 //        Long userId = userService.getCurrentUserId();
 //        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
 //        user.ifPresent(userBap -> model.addAttribute("user", userBap));
-        Place place = placeService.getPlaceById(placeId);
+        System.out.println("Incoming placeId = " + placeId);
+        Place place = placeService.getPlaceById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));;
 
         model.addAttribute("place", place);
         model.addAttribute("placeId", placeId);
@@ -76,17 +79,22 @@ public class PageController {
     }
 
     @GetMapping("/profile")
-    public String profile(Model model) {
-        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
-        user.ifPresent(userBap -> model.addAttribute("user", userBap));
-        model.addAttribute("username", user.get().getUsername());
-        model.addAttribute("email", user.get().getUsername());
+    public String profile(Model model) { String userId = userService.getCurrentUserId();
+        Optional<User> userOpt = userService.getUserById(userId);
+
+        if (userOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+        User user = userOpt.get();
+        model.addAttribute("user", user);
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("email", user.getEmail());
 //      list favorites from user
-        model.addAttribute("favorites", interactionService.findAllUserInteractions(userService.getCurrentUserId()));
+        List<Interaction> favorites =
+                interactionService.findAllUserInteractions(userService.getCurrentUserId());
+        model.addAttribute("favorites", favorites);
 
         return "profile"; // will load resources/templates/profile.html
     }
-
-
 
 }

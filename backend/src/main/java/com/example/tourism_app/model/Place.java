@@ -8,14 +8,12 @@ import java.util.UUID;
 @Table(name = "places")
 @Data
 //@NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class Place {
-    @Id // internal surrogate key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "place_uuid", nullable = false, unique = true)
-    private UUID placeUuid;
+    @Id
+    @Column(name = "place_id", nullable = false, unique = true)
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -47,8 +45,8 @@ public class Place {
     public Place() {
     }
 
-    public Place(UUID placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
-        this.placeUuid = placeUuid;
+    public Place(String placeUuid, String name, String category, String type, String place, String municipality, Double lat, Double lng, Double rating, Integer price, Integer timeToVisit, String tags, String description, String nameNormalized, String modelText, String imageUrl) {
+        this.id = placeUuid;
         this.name = name;
         this.category = category;
         this.type = type;
@@ -67,16 +65,12 @@ public class Place {
 
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public UUID getPlaceUuid() {
-        return placeUuid;
-    }
-
-    public void setPlaceUuid(UUID placeUuid) {
-        this.placeUuid = placeUuid;
+    public void setPlaceUuid(String placeUuid) {
+        this.id = placeUuid;
     }
 
     public String getName() {

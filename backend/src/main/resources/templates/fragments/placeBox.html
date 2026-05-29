@@ -48,7 +48,7 @@
             <div class="mt-auto small text-muted">
                 <div th:if="${place.price != null}"><i class="bi bi-cash-coin me-1"></i>Price level: <span th:text="${place.price}">0</span></div>
                 <div th:if="${place.timeToVisit != null}"><i class="bi bi-clock me-1"></i>Visit time: <span th:text="${place.timeToVisit}">0</span> min</div>
-                <div th:if="${place.placeUuid != null}"><i class="bi bi-hash me-1"></i><span th:text="${place.placeUuid}">UUID</span></div>
+                <div th:if="${place.id != null}"><i class="bi bi-hash me-1"></i><span th:text="${place.id}">UUID</span></div>
             </div>
         </div>
     </article>
