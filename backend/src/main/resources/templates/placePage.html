@@ -122,6 +122,11 @@
                         No description available for this place.
                     </div>
 
+                    <a th:href="@{/places/{id}/recommendations(id=${place.id})}"
+                       class="btn btn-primary mt-3">
+                        <i class="bi bi-stars me-2"></i>Recommend me similar places
+                    </a>
+
                 </div>
             </div>
 
@@ -146,10 +151,10 @@
 
             <!-- Empty State -->
             <div class="similar-places-section"
-                 th:if="${similarPlaces == null or #lists.isEmpty(similarPlaces)}">
+                 th:if="${recommendationsRequested == true and (similarPlaces == null or #lists.isEmpty(similarPlaces))}">
                 <div class="empty-similar-places">
                     <i class="bi bi-search me-2" style="font-size: 2rem;"></i>
-                    <p>No similar places found in this category.</p>
+                    <p>No similar places found.</p>
                 </div>
             </div>
 

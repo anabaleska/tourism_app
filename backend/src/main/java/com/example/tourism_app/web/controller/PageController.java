@@ -5,6 +5,7 @@ import com.example.tourism_app.model.Place;
 import com.example.tourism_app.model.User;
 import com.example.tourism_app.service.InteractionService;
 import com.example.tourism_app.service.PlaceService;
+import com.example.tourism_app.service.RecommendationService;
 import com.example.tourism_app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +20,14 @@ public class PageController {
     private final UserService userService;
     private final PlaceService placeService;
     private final InteractionService interactionService;
+    private final RecommendationService recommendationService;
     private static final int PLACES_PER_PAGE = 20;
 
-    public PageController(UserService userService, PlaceService placeService, InteractionService interactionService) {
+    public PageController(UserService userService, PlaceService placeService, InteractionService interactionService, RecommendationService recommendationService) {
         this.userService = userService;
         this.placeService = placeService;
         this.interactionService = interactionService;
+        this.recommendationService = recommendationService;
     }
 
     @RequestMapping({ "/home", "/" })
@@ -61,9 +64,19 @@ public class PageController {
 
         model.addAttribute("place", place);
         model.addAttribute("placeId", placeId);
-        model.addAttribute("similarPlaces", placeService.listPlaces().stream()
-                .filter(p -> p.getCategory().equals(place.getCategory()) && !p.getId().equals(placeId))
-                .collect(java.util.stream.Collectors.toList()));
+        model.addAttribute("recommendationsRequested", false);
+
+        return "placePage";
+    }
+
+    @GetMapping("/places/{placeId}/recommendations")
+    public String contentBasedRecommendations(@PathVariable String placeId, Model model) {
+        Place place = placeService.getPlaceById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+
+        model.addAttribute("place", place);
+        model.addAttribute("placeId", placeId);
+        model.addAttribute("similarPlaces", recommendationService.getContentBasedRecommendations(placeId));
+        model.addAttribute("recommendationsRequested", true);
 
         return "placePage";
     }
