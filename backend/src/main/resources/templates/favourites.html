@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Favorites</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="theme-page profile-page">
+<div class="page-shell">
+    <div th:replace="fragments/topbars :: site-header"></div>
+
+    <main class="page-content">
+        <section class="profile-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h2 class="section-title">Favorite places</h2>
+                    <span class="section-pill"
+                          th:if="${favorites != null}"
+                          th:text="${#lists.size(favorites)} + ' places'">0 places</span>
+                </div>
+
+                <div class="alert alert-info" th:if="${favorites == null or #lists.isEmpty(favorites)}">
+                    <i class="bi bi-info-circle me-1"></i>
+                    No favorite places yet.
+                </div>
+
+                <div class="places-grid" th:if="${favorites != null and !#lists.isEmpty(favorites)}">
+                    <th:block th:each="favorite : ${favorites}">
+                        <div th:if="${favorite.place != null}" class="place-card-wrapper">
+                            <div th:replace="~{fragments/placeBox :: placeBox(${favorite.place})}"></div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="fragments/topbars :: site-footer"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
