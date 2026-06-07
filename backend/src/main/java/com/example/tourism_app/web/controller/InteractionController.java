@@ -35,6 +35,7 @@ public class InteractionController {
     public String addInteraction(Model model,
                                  @RequestParam String placeId,
                                  @RequestParam Integer interaction,
+                                 @RequestParam(required = false) String redirectTo,
                                  @PathVariable Long interactionId) {
         if (interactionId == null || interactionId < 0) {
             throw new IllegalArgumentException("interactionId is required");
@@ -46,7 +47,7 @@ public class InteractionController {
             throw new IllegalArgumentException("interaction is required");
         }
         interactionService.createInteraction(requireCurrentUserId(), placeId, interaction);
-        return "redirect:/home";
+        return redirectTo(redirectTo);
     }
 
     //
@@ -54,6 +55,7 @@ public class InteractionController {
     public String updateInteraction(Model model,
                                     @RequestParam String placeId,
                                     @RequestParam Integer interaction,
+                                    @RequestParam(required = false) String redirectTo,
                                     @PathVariable Long interactionId) {
 
         if (interactionId == null) {
@@ -67,9 +69,16 @@ public class InteractionController {
         }
 
         interactionService.updateInteraction(interactionId, requireCurrentUserId(), placeId, interaction);
-        return "redirect:/home";
+        return redirectTo(redirectTo);
     }
 
+    private String redirectTo(String redirectTo) {
+        if (redirectTo == null || redirectTo.isBlank() || !redirectTo.startsWith("/") || redirectTo.startsWith("//")) {
+            return "redirect:/home";
+        }
+
+        return "redirect:" + redirectTo;
+    }
 
 
 }

@@ -1,10 +1,9 @@
 package com.example.tourism_app.service;
 
 import com.example.tourism_app.model.Interaction;
-import com.example.tourism_app.model.Place;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 public interface InteractionService {
     Interaction getInteractionById(Long id);
@@ -13,5 +12,6 @@ public interface InteractionService {
     void deleteInteraction(Long id);
     List<Interaction> listInteractions();
     List<Interaction> findAllUserInteractions(String userId);
+    Optional<Interaction> findUserPlaceInteraction(String userId, String placeId);
     Double averageInteraction(String placeId);
 }

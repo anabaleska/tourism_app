@@ -673,6 +673,44 @@ body.theme-page {
     color: #7a7a7a;
 }
 
+.place-page .detail-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.place-page .interaction-inline-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.place-page .interaction-input-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 38px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: #f7f2ee;
+    color: #6f6f6f;
+    font-weight: 700;
+}
+
+.place-page .interaction-input {
+    width: 130px;
+    border-radius: 999px;
+}
+
+.place-page .interaction-submit-btn {
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
 .place-page .similar-places-section {
     background: #ffffff;
     border-radius: 24px;
@@ -789,6 +827,23 @@ body.theme-page {
 
     .place-page .similar-places-scroll {
         grid-auto-columns: 240px;
+    }
+
+    .place-page .detail-actions,
+    .place-page .interaction-inline-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .place-page .detail-actions > .btn,
+    .place-page .interaction-inline-form,
+    .place-page .interaction-submit-btn,
+    .place-page .interaction-input {
+        width: 100%;
+    }
+
+    .place-page .interaction-input-label {
+        justify-content: center;
     }
 }
 
