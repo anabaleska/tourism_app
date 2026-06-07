@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface RecommendationService {
     List<Place> getContentBasedRecommendations(String placeId);
+    List<Place> getCollaborativeRecommendations(String userId);
 }

@@ -29,10 +29,45 @@
 
                 <div class="places-grid" th:if="${favorites != null and !#lists.isEmpty(favorites)}">
                     <th:block th:each="favorite : ${favorites}">
-                        <div th:if="${favorite.place != null}" class="place-card-wrapper">
+                        <div th:if="${favorite != null and favorite.place != null}" class="place-card-wrapper">
                             <div th:replace="~{fragments/placeBox :: placeBox(${favorite.place})}"></div>
                         </div>
                     </th:block>
+                </div>
+
+                <a th:href="@{/favorites/recommendations}"
+                   class="btn btn-primary mt-4"
+                   th:if="${favorites != null and !#lists.isEmpty(favorites)}">
+                    <i class="bi bi-people-fill me-2"></i>Others also liked
+                </a>
+            </div>
+        </section>
+
+        <section class="profile-section"
+                 th:if="${collaborativeRecommendations != null and !#lists.isEmpty(collaborativeRecommendations)}">
+            <div class="container">
+                <div class="section-heading">
+                    <h2 class="section-title">Others also liked</h2>
+                    <span class="section-pill"
+                          th:text="${#lists.size(collaborativeRecommendations)} + ' places'">0 places</span>
+                </div>
+
+                <div class="places-grid">
+                    <th:block th:each="place : ${collaborativeRecommendations}">
+                        <div th:if="${place != null}" class="place-card-wrapper">
+                            <div th:replace="~{fragments/placeBox :: placeBox(${place})}"></div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+
+        <section class="profile-section"
+                 th:if="${collaborativeRecommendationsRequested == true and (collaborativeRecommendations == null or #lists.isEmpty(collaborativeRecommendations))}">
+            <div class="container">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-1"></i>
+                    No collaborative recommendations found yet.
                 </div>
             </div>
         </section>
