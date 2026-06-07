@@ -115,12 +115,28 @@ public class PageController {
     }
 
     //  Get favourites page
-    @GetMapping("/favourites")
-    public String reportPostPage(@ModelAttribute Model model) {
-//        Long userId = userService.getCurrentUserId();
-//        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
-//        user.ifPresent(userBap -> model.addAttribute("user", userBap));
+    @GetMapping({"/favorites", "/favourites"})
+    public String favourites(Model model) {
+        String userId = userService.getCurrentUserId();
+        Optional<User> userOpt = userService.getUserById(userId);
 
+        if (userOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        List<Interaction> favorites = interactionService.findAllUserInteractions(userId);
+
+        Map<String, Double> averageInteractions = new HashMap<>();
+        for (Interaction favorite : favorites) {
+            if (favorite != null && favorite.getPlace() != null && favorite.getPlace().getId() != null) {
+                String placeId = favorite.getPlace().getId();
+                averageInteractions.put(placeId, interactionService.averageInteraction(placeId));
+            }
+        }
+
+        model.addAttribute("user", userOpt.get());
+        model.addAttribute("favorites", favorites);
+        model.addAttribute("averageInteractions", averageInteractions);
         return "favourites";
     }
 
