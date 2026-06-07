@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface PlaceRepositoryJpa extends JpaRepository<Place, String> {
-    Place getPlaceByPlaceUuid(String placeUuid);
+    Place getPlaceById(String placeUuid);
 }

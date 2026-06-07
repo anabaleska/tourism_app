@@ -1,58 +1,190 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="placeBox(place)" class="col h-100" th:if="${place != null}">
-    <article class="card h-100 shadow-sm border-0">
-        <img th:if="${place.imageUrl != null and !#strings.isEmpty(place.imageUrl)}"
-             th:src="${place.imageUrl}"
-             th:alt="${place.name}"
-             class="card-img-top"
-             style="height: 220px; object-fit: cover;"/>
 
-        <div th:if="${place.imageUrl == null or #strings.isEmpty(place.imageUrl)}"
-             class="d-flex align-items-center justify-content-center bg-light text-secondary"
-             style="height: 220px;">
-            <div class="text-center">
-                <i class="bi bi-image fs-1"></i>
-                <div>No image available</div>
+<div th:fragment="placeBox(place)"
+     class="col h-100"
+     th:if="${place != null}"
+     th:with="
+        placeId=${place.id != null ? place.id : ''},
+        placeName=${place.name != null ? place.name : ''},
+        placeCategory=${place.category != null ? place.category : ''},
+        placeType=${place.type != null ? place.type : ''},
+        placeArea=${place.place != null ? place.place : ''},
+        placeMunicipality=${place.municipality != null ? place.municipality : ''},
+        placeDescription=${place.description != null ? place.description : ''},
+        placeImageUrl=${place.imageUrl != null ? place.imageUrl : ''},
+        placeRating=${place.rating != null ? place.rating : null},
+        placePrice=${place.price != null ? place.price : null},
+        placeTimeToVisit=${place.timeToVisit != null ? place.timeToVisit : null},
+        averageInteractionValue=${averageInteractions != null && averageInteractions[placeId] != null ? averageInteractions[placeId] : 0.0},
+        currentInteractionId=${userInteractionIds != null ? userInteractionIds[placeId] : null},
+        currentInteractionValue=${userInteractionValues != null ? userInteractionValues[placeId] : null}">
+
+    <article class="card h-100 shadow-sm border-0 tourism-place-card">
+
+        <div class="position-relative">
+
+            <img th:if="${placeImageUrl != ''}"
+                 th:src="${placeImageUrl}"
+                 th:alt="${placeName}"
+                 class="card-img-top"
+                 style="height: 220px; object-fit: cover;"/>
+
+            <div th:if="${placeImageUrl == ''}"
+                 class="d-flex align-items-center justify-content-center bg-light text-secondary"
+                 style="height: 220px;">
+                <div class="text-center">
+                    <i class="bi bi-image fs-1"></i>
+                    <div>No image available</div>
+                </div>
             </div>
+
+            <span class="position-absolute top-0 end-0 m-3 badge rounded-pill bg-dark bg-opacity-75 text-white px-3 py-2">
+                <i class="bi bi-star-fill me-1 text-warning"></i>
+                <span th:text="${#numbers.formatDecimal(averageInteractionValue, 1, 1)}">0.0</span>
+            </span>
+
         </div>
 
         <div class="card-body d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <h5 class="card-title mb-0" th:text="${place.name}">Place name</h5>
-                <span class="badge text-bg-warning" th:if="${place.rating != null}">
-                    <i class="bi bi-star-fill me-1"></i><span th:text="${#numbers.formatDecimal(place.rating, 1, 1)}">4.5</span>
+
+            <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                <h5 class="card-title mb-0 text-truncate"
+                    th:text="${placeName}">
+                    Place name
+                </h5>
+
+                <span class="badge text-bg-warning"
+                      th:if="${placeRating != null}">
+                    <i class="bi bi-star-fill me-1"></i>
+                    <span th:text="${#numbers.formatDecimal(placeRating, 1, 1)}">4.5</span>
                 </span>
             </div>
 
-            <div class="mb-2">
-                <span class="badge text-bg-primary me-1" th:if="${place.category != null and !#strings.isEmpty(place.category)}" th:text="${place.category}">Category</span>
-                <span class="badge text-bg-secondary" th:if="${place.type != null and !#strings.isEmpty(place.type)}" th:text="${place.type}">Type</span>
+            <div class="mb-2 d-flex flex-wrap gap-2">
+                <span class="badge text-bg-primary"
+                      th:if="${placeCategory != ''}"
+                      th:text="${placeCategory}">
+                    Category
+                </span>
+
+                <span class="badge text-bg-secondary"
+                      th:if="${placeType != ''}"
+                      th:text="${placeType}">
+                    Type
+                </span>
             </div>
 
-            <p class="text-muted small mb-2" th:if="${(place.place != null and !#strings.isEmpty(place.place)) or (place.municipality != null and !#strings.isEmpty(place.municipality))}">
+            <p class="text-muted small mb-2"
+               th:if="${placeArea != '' or placeMunicipality != ''}">
                 <i class="bi bi-geo-alt me-1"></i>
-                <span th:text="${(place.place != null and !#strings.isEmpty(place.place)) ? place.place : ''}">Place</span>
-                <span th:if="${place.place != null and !#strings.isEmpty(place.place) and place.municipality != null and !#strings.isEmpty(place.municipality)}">, </span>
-                <span th:text="${(place.municipality != null and !#strings.isEmpty(place.municipality)) ? place.municipality : ''}">Municipality</span>
+
+                <span th:text="${placeArea != '' ? placeArea : ''}">
+                    Place
+                </span>
+
+                <span th:if="${placeArea != '' and placeMunicipality != ''}">
+                    ,
+                </span>
+
+                <span th:text="${placeMunicipality != '' ? placeMunicipality : ''}">
+                    Municipality
+                </span>
             </p>
 
-            <p class="card-text place-card-description mb-3" th:if="${place.description != null and !#strings.isEmpty(place.description)}" th:text="${place.description}">
+            <p class="card-text place-card-description mb-3"
+               th:if="${placeDescription != ''}"
+               th:text="${placeDescription}">
                 Description
             </p>
-            <p class="card-text place-card-description mb-3 text-muted" th:if="${place.description == null or #strings.isEmpty(place.description)}">
+
+            <p class="card-text place-card-description mb-3 text-muted"
+               th:if="${placeDescription == ''}">
                 No description available.
             </p>
 
-            <div class="mt-auto small text-muted">
-                <div th:if="${place.price != null}"><i class="bi bi-cash-coin me-1"></i>Price level: <span th:text="${place.price}">0</span></div>
-                <div th:if="${place.timeToVisit != null}"><i class="bi bi-clock me-1"></i>Visit time: <span th:text="${place.timeToVisit}">0</span> min</div>
-                <div th:if="${place.id != null}"><i class="bi bi-hash me-1"></i><span th:text="${place.id}">UUID</span></div>
+            <div class="mt-auto small text-muted d-flex flex-column gap-1">
+
+                <div class="fw-semibold text-dark">
+                    <i class="bi bi-graph-up-arrow me-1 text-primary"></i>
+                    Average interaction:
+                    <span class="text-primary"
+                          th:text="${#numbers.formatDecimal(averageInteractionValue, 1, 1)}">
+                        0.0
+                    </span>
+                </div>
+
+                <div th:if="${placePrice != null}">
+                    <i class="bi bi-cash-coin me-1"></i>
+                    Price level:
+                    <span th:text="${placePrice}">0</span>
+                </div>
+
+                <div th:if="${placeTimeToVisit != null}">
+                    <i class="bi bi-clock me-1"></i>
+                    Visit time:
+                    <span th:text="${placeTimeToVisit}">0</span> min
+                </div>
+
+                <div th:if="${place.id != null}">
+                    <i class="bi bi-hash me-1"></i>
+                    <span th:text="${place.id}">UUID</span>
+                </div>
+
             </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+
+                <a class="btn btn-outline-primary btn-sm flex-grow-1"
+                   th:href="@{/places/{id}(id=${place.id})}">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                    View details
+                </a>
+
+                <button type="button"
+                        class="btn btn-success btn-sm flex-grow-1 interaction-btn"
+                        th:if="${authenticated == true and currentInteractionId == null}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#interactionModal"
+                        th:attr="
+                            data-place-id=${place.id},
+                            data-place-name=${placeName},
+                            data-average=${averageInteractionValue},
+                            data-current-interaction=${currentInteractionValue},
+                            data-action=@{/addInteraction/{interactionId}(interactionId=0)},
+                            data-mode='add'">
+
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Add interaction
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-warning btn-sm flex-grow-1 interaction-btn"
+                        th:if="${authenticated == true and currentInteractionId != null}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#interactionModal"
+                        th:attr="
+                            data-place-id=${place.id},
+                            data-place-name=${placeName},
+                            data-average=${averageInteractionValue},
+                            data-current-interaction=${currentInteractionValue},
+                            data-action=@{/updateInteraction/{interactionId}(interactionId=${currentInteractionId})},
+                            data-mode='update'">
+
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Update interaction
+
+                </button>
+
+            </div>
+
         </div>
+
     </article>
+
 </div>
+
 </body>
 </html>
-

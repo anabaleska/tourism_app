@@ -62,9 +62,9 @@ public class WebSecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
+//                        .loginProcessingUrl("/login")
+//                        .usernameParameter("username")
+//                        .passwordParameter("password")
                         .failureUrl("/login?error=BadCredentials")
                         .defaultSuccessUrl("/home", true)
                 )

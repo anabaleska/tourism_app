@@ -11,8 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class PageController {
@@ -36,6 +37,15 @@ public class PageController {
         //Optional<User> user = userService.getUserById(userService.getCurrentUserId());
         //user.ifPresent(userBap -> model.addAttribute("user", userBap));
         java.util.List<Place> allPlaces = placeService.listPlaces();
+        boolean authenticated = false;
+        String currentUserId = null;
+
+        try {
+            currentUserId = userService.getCurrentUserId();
+            authenticated = true;
+        } catch (Exception ignored) {
+            // anonymous users can still browse the home page
+        }
 
         // Calculate pagination
         int totalPlaces = allPlaces.size();
@@ -45,10 +55,33 @@ public class PageController {
 
         java.util.List<Place> paginatedPlaces = allPlaces.subList(startIndex, endIndex);
 
+        Map<String, Double> averageInteractions = new HashMap<>();
+        for (Place place : paginatedPlaces) {
+            if (place != null && place.getId() != null) {
+                averageInteractions.put(place.getId(), interactionService.averageInteraction(place.getId()));
+            }
+        }
+
+        Map<String, Long> userInteractionIds = new HashMap<>();
+        Map<String, Integer> userInteractionValues = new HashMap<>();
+        if (authenticated && currentUserId != null) {
+            for (Interaction interaction : interactionService.findAllUserInteractions(currentUserId)) {
+                if (interaction != null && interaction.getPlace() != null && interaction.getPlace().getId() != null) {
+                    String placeId = interaction.getPlace().getId();
+                    userInteractionIds.put(placeId, interaction.getId());
+                    userInteractionValues.put(placeId, interaction.getInteraction());
+                }
+            }
+        }
+
         model.addAttribute("places", paginatedPlaces);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalPlaces", totalPlaces);
+        model.addAttribute("averageInteractions", averageInteractions);
+        model.addAttribute("userInteractionIds", userInteractionIds);
+        model.addAttribute("userInteractionValues", userInteractionValues);
+        model.addAttribute("authenticated", authenticated);
 
         return "home"; // will load resources/templates/home.html
     }
@@ -60,7 +93,7 @@ public class PageController {
 //        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
 //        user.ifPresent(userBap -> model.addAttribute("user", userBap));
         System.out.println("Incoming placeId = " + placeId);
-        Place place = placeService.getPlaceById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));;
+        Place place = placeService.getPlaceById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
 
         model.addAttribute("place", place);
         model.addAttribute("placeId", placeId);

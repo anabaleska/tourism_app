@@ -10,6 +10,7 @@ import com.example.tourism_app.service.InteractionService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -32,40 +33,24 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public Interaction createInteraction(String userUuid, String placeUuid, Integer interaction) {
-        Place place = placeRepositoryJpa.getPlaceByPlaceUuid(placeUuid);
+        Place place = placeRepositoryJpa.getPlaceById(placeUuid);
         User user = userRepositoryJpa.findById(userUuid).orElseThrow(() -> new RuntimeException("User not found"));;
         Interaction newInteraction = new Interaction(user, place, interaction);
         interactionRepositoryJpa.save(newInteraction);
-
         return newInteraction;
     }
 
     @Override
     public Interaction updateInteraction(Long id, String userUuid, String placeUuid, Integer interaction) {
-        return null;
-    }
+        Interaction OldInteraction = interactionRepositoryJpa.findById(id).orElseThrow(() -> new RuntimeException("Interaction not found"));
+        if(!userUuid.equals(OldInteraction.getUser().getId())) throw new RuntimeException("User interaction not owned by you");
+        if(!placeUuid.equals(OldInteraction.getPlace().getId())) throw new RuntimeException("Place interaction not found");
+        OldInteraction.setInteraction(interaction);
+        interactionRepositoryJpa.save(OldInteraction);
 
-//    @Override
-//    public Interaction updateInteraction(Long id, UUID userUuid, UUID placeUuid, Integer interaction) {
-//
-//        Interaction OldInteraction = interactionRepositoryJpa.getInteractionById(id);
-//        OldInteraction.setInteraction(interaction);
-//
-//        if(OldInteraction.getPlace().getPlaceUuid() != placeUuid){
-//            Place place = placeRepositoryJpa.getPlaceByPlaceUuid(placeUuid);
-//            OldInteraction.setPlace(place);
-//            OldInteraction.setPlaceUuid(placeUuid);
-//        }
-//        if(OldInteraction.getUser().getUserUuid() != userUuid){
-//            User user = userRepositoryJpa.getUserByUserUuid(userUuid);
-//            OldInteraction.setUser(user);
-//            OldInteraction.setUserUuid(userUuid);
-//        }
-//
-//        interactionRepositoryJpa.save(OldInteraction);
-//
-//        return OldInteraction;
-//    }
+        return OldInteraction;
+
+    }
 
     @Override
     public void deleteInteraction(Long id) {
@@ -80,5 +65,21 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public List<Interaction> findAllUserInteractions(String userId) {
         return interactionRepositoryJpa.findAllByUser_Id(userId);
+    }
+
+    @Override
+    public Double averageInteraction(String placeId) {
+        List<Interaction> interactions = interactionRepositoryJpa.findAllByPlace_Id(placeId);
+        if (interactions == null || interactions.isEmpty()) {
+            return 0.0;
+        }
+
+        return interactions.stream()
+                .filter(Objects::nonNull)
+                .map(Interaction::getInteraction)
+                .filter(Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0.0);
     }
 }

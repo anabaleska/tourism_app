@@ -13,4 +13,5 @@ public interface InteractionService {
     void deleteInteraction(Long id);
     List<Interaction> listInteractions();
     List<Interaction> findAllUserInteractions(String userId);
+    Double averageInteraction(String placeId);
 }
