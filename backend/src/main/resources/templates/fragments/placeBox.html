@@ -16,10 +16,7 @@
         placeImageUrl=${place.imageUrl != null ? place.imageUrl : ''},
         placeRating=${place.rating != null ? place.rating : null},
         placePrice=${place.price != null ? place.price : null},
-        placeTimeToVisit=${place.timeToVisit != null ? place.timeToVisit : null},
-        averageInteractionValue=${averageInteractions != null && averageInteractions[placeId] != null ? averageInteractions[placeId] : 0.0},
-        currentInteractionId=${userInteractionIds != null ? userInteractionIds[placeId] : null},
-        currentInteractionValue=${userInteractionValues != null ? userInteractionValues[placeId] : null}">
+        placeTimeToVisit=${place.timeToVisit != null ? place.timeToVisit : null}">
 
     <article class="card h-100 shadow-sm border-0 tourism-place-card">
 
@@ -39,11 +36,6 @@
                     <div>No image available</div>
                 </div>
             </div>
-
-            <span class="position-absolute top-0 end-0 m-3 badge rounded-pill bg-dark bg-opacity-75 text-white px-3 py-2">
-                <i class="bi bi-star-fill me-1 text-warning"></i>
-                <span th:text="${#numbers.formatDecimal(averageInteractionValue, 1, 1)}">0.0</span>
-            </span>
 
         </div>
 
@@ -110,7 +102,7 @@
                     <i class="bi bi-graph-up-arrow me-1 text-primary"></i>
                     Average interaction:
                     <span class="text-primary"
-                          th:text="${#numbers.formatDecimal(averageInteractionValue, 1, 1)}">
+                          th:text="${#numbers.formatDecimal(@interactionServiceImpl.averageInteraction(placeId), 1, 1)}">
                         0.0
                     </span>
                 </div>
@@ -127,9 +119,10 @@
                     <span th:text="${placeTimeToVisit}">0</span> min
                 </div>
 
-                <div th:if="${place.id != null}">
+                <div th:if="${userInteractions.get(placeId) != null}">
                     <i class="bi bi-hash me-1"></i>
-                    <span th:text="${place.id}">UUID</span>
+                    Your interaction:
+                    <span th:text="${userInteractions.get(placeId)}">UUID</span>
                 </div>
 
             </div>
@@ -141,42 +134,6 @@
                     <i class="bi bi-box-arrow-up-right me-1"></i>
                     View details
                 </a>
-
-                <button type="button"
-                        class="btn btn-success btn-sm flex-grow-1 interaction-btn"
-                        th:if="${authenticated == true and currentInteractionId == null}"
-                        data-bs-toggle="modal"
-                        data-bs-target="#interactionModal"
-                        th:attr="
-                            data-place-id=${place.id},
-                            data-place-name=${placeName},
-                            data-average=${averageInteractionValue},
-                            data-current-interaction=${currentInteractionValue},
-                            data-action=@{/addInteraction/{interactionId}(interactionId=0)},
-                            data-mode='add'">
-
-                    <i class="bi bi-plus-circle me-1"></i>
-                    Add interaction
-
-                </button>
-
-                <button type="button"
-                        class="btn btn-warning btn-sm flex-grow-1 interaction-btn"
-                        th:if="${authenticated == true and currentInteractionId != null}"
-                        data-bs-toggle="modal"
-                        data-bs-target="#interactionModal"
-                        th:attr="
-                            data-place-id=${place.id},
-                            data-place-name=${placeName},
-                            data-average=${averageInteractionValue},
-                            data-current-interaction=${currentInteractionValue},
-                            data-action=@{/updateInteraction/{interactionId}(interactionId=${currentInteractionId})},
-                            data-mode='update'">
-
-                    <i class="bi bi-pencil-square me-1"></i>
-                    Update interaction
-
-                </button>
 
             </div>
 

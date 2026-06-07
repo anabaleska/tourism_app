@@ -31,15 +31,16 @@ public class Place {
     private Integer timeToVisit;
 
     private String tags;
+    @Column(length = 1024)
     private String description;
 
     @Column(name = "name_normalized")
     private String nameNormalized;
 
-    @Column(name = "model_text")
+    @Column(name = "model_text", length = 1024)
     private String modelText;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 1024)
     private String imageUrl;
 
     public Place() {

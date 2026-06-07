@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class InteractionServiceImpl implements InteractionService {
@@ -35,6 +35,15 @@ public class InteractionServiceImpl implements InteractionService {
     public Interaction createInteraction(String userUuid, String placeUuid, Integer interaction) {
         Place place = placeRepositoryJpa.getPlaceById(placeUuid);
         User user = userRepositoryJpa.findById(userUuid).orElseThrow(() -> new RuntimeException("User not found"));;
+
+        Optional<Interaction> existingInteraction = interactionRepositoryJpa.findByUser_IdAndPlace_Id(userUuid, placeUuid);
+        if (existingInteraction.isPresent()) {
+            Interaction oldInteraction = existingInteraction.get();
+            oldInteraction.setInteraction(interaction);
+            interactionRepositoryJpa.save(oldInteraction);
+            return oldInteraction;
+        }
+
         Interaction newInteraction = new Interaction(user, place, interaction);
         interactionRepositoryJpa.save(newInteraction);
         return newInteraction;
@@ -65,6 +74,11 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public List<Interaction> findAllUserInteractions(String userId) {
         return interactionRepositoryJpa.findAllByUser_Id(userId);
+    }
+
+    @Override
+    public Optional<Interaction> findUserPlaceInteraction(String userId, String placeId) {
+        return interactionRepositoryJpa.findByUser_IdAndPlace_Id(userId, placeId);
     }
 
     @Override

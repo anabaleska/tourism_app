@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
@@ -35,18 +36,9 @@ public class PageController {
     @RequestMapping({ "/home", "/" })
     public String home(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         //      list places
-        //Optional<User> user = userService.getUserById(userService.getCurrentUserId());
-        //user.ifPresent(userBap -> model.addAttribute("user", userBap));
+//        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
+//        user.ifPresent(userBap -> model.addAttribute("user", userBap));
         java.util.List<Place> allPlaces = placeService.listPlaces();
-        boolean authenticated = false;
-        String currentUserId = null;
-
-        try {
-            currentUserId = userService.getCurrentUserId();
-            authenticated = true;
-        } catch (Exception ignored) {
-            // anonymous users can still browse the home page
-        }
 
         // Calculate pagination
         int totalPlaces = allPlaces.size();
@@ -56,33 +48,20 @@ public class PageController {
 
         java.util.List<Place> paginatedPlaces = allPlaces.subList(startIndex, endIndex);
 
-        Map<String, Double> averageInteractions = new HashMap<>();
-        for (Place place : paginatedPlaces) {
-            if (place != null && place.getId() != null) {
-                averageInteractions.put(place.getId(), interactionService.averageInteraction(place.getId()));
-            }
-        }
+        List<Interaction> userInteractedPlaces = interactionService.findAllUserInteractions(userService.getCurrentUserId());
 
-        Map<String, Long> userInteractionIds = new HashMap<>();
-        Map<String, Integer> userInteractionValues = new HashMap<>();
-        if (authenticated && currentUserId != null) {
-            for (Interaction interaction : interactionService.findAllUserInteractions(currentUserId)) {
-                if (interaction != null && interaction.getPlace() != null && interaction.getPlace().getId() != null) {
-                    String placeId = interaction.getPlace().getId();
-                    userInteractionIds.put(placeId, interaction.getId());
-                    userInteractionValues.put(placeId, interaction.getInteraction());
-                }
-            }
-        }
+        Map<String, Integer> personalPlaceRatings = userInteractedPlaces.stream()
+                .collect(Collectors.toMap(
+                        i -> i.getPlace().getId(),
+                        Interaction::getInteraction,
+                        (existing, replacement) -> replacement // Resolves duplicate keys if a place appears more than once
+                ));
 
         model.addAttribute("places", paginatedPlaces);
+        model.addAttribute("userInteractions", personalPlaceRatings);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalPlaces", totalPlaces);
-        model.addAttribute("averageInteractions", averageInteractions);
-        model.addAttribute("userInteractionIds", userInteractionIds);
-        model.addAttribute("userInteractionValues", userInteractionValues);
-        model.addAttribute("authenticated", authenticated);
 
         return "home"; // will load resources/templates/home.html
     }
@@ -99,6 +78,7 @@ public class PageController {
         model.addAttribute("place", place);
         model.addAttribute("placeId", placeId);
         model.addAttribute("recommendationsRequested", false);
+        addPlaceInteractionModel(place, model);
 
         return "placePage";
     }
@@ -111,6 +91,7 @@ public class PageController {
         model.addAttribute("placeId", placeId);
         model.addAttribute("similarPlaces", recommendationService.getContentBasedRecommendations(placeId));
         model.addAttribute("recommendationsRequested", true);
+        addPlaceInteractionModel(place, model);
 
         return "placePage";
     }
@@ -169,6 +150,30 @@ public class PageController {
         model.addAttribute("user", userOpt.get());
         model.addAttribute("favorites", favorites);
         model.addAttribute("averageInteractions", averageInteractions);
+    }
+
+    private void addPlaceInteractionModel(Place place, Model model) {
+        boolean authenticated = false;
+        Interaction currentInteraction = null;
+
+        if (place != null && place.getId() != null) {
+            model.addAttribute("averageInteraction", interactionService.averageInteraction(place.getId()));
+
+            try {
+                String currentUserId = userService.getCurrentUserId();
+                authenticated = true;
+                currentInteraction = interactionService
+                        .findUserPlaceInteraction(currentUserId, place.getId())
+                        .orElse(null);
+            } catch (Exception ignored) {
+                // Anonymous users can view place details, but cannot submit interactions.
+            }
+        } else {
+            model.addAttribute("averageInteraction", 0.0);
+        }
+
+        model.addAttribute("authenticated", authenticated);
+        model.addAttribute("currentInteraction", currentInteraction);
     }
 
     @GetMapping("/profile")
