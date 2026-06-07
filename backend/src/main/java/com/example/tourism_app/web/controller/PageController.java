@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -114,21 +115,52 @@ public class PageController {
         return "placePage";
     }
 
-    //  Get favourites page
-    @GetMapping({"/favorites", "/favourites"})
-    public String favourites(Model model) {
+    //  Get favorites page
+    @GetMapping("/favorites")
+    public String favorites(Model model) {
         String userId = userService.getCurrentUserId();
+        addFavoritesModel(userId, model);
+        model.addAttribute("collaborativeRecommendationsRequested", false);
+
+        return "favorites";
+    }
+
+    @GetMapping("/favorites/recommendations")
+    public String collaborativeRecommendations(Model model) {
+        String userId = userService.getCurrentUserId();
+        addFavoritesModel(userId, model);
+        List<Place> collaborativeRecommendations = recommendationService.getCollaborativeRecommendations(userId);
+        Map<String, Double> averageInteractions = (Map<String, Double>) model.getAttribute("averageInteractions");
+
+        if (averageInteractions != null) {
+            for (Place place : collaborativeRecommendations) {
+                if (place != null && place.getId() != null) {
+                    averageInteractions.put(place.getId(), interactionService.averageInteraction(place.getId()));
+                }
+            }
+        }
+
+        model.addAttribute("collaborativeRecommendations", collaborativeRecommendations);
+        model.addAttribute("collaborativeRecommendationsRequested", true);
+
+        return "favorites";
+    }
+
+    private void addFavoritesModel(String userId, Model model) {
         Optional<User> userOpt = userService.getUserById(userId);
 
         if (userOpt.isEmpty()) {
-            return "redirect:/login";
+            throw new RuntimeException("User not found");
         }
 
-        List<Interaction> favorites = interactionService.findAllUserInteractions(userId);
+        List<Interaction> favorites = interactionService.findAllUserInteractions(userId).stream()
+                .filter(Objects::nonNull)
+                .filter(interaction -> interaction.getPlace() != null)
+                .toList();
 
         Map<String, Double> averageInteractions = new HashMap<>();
         for (Interaction favorite : favorites) {
-            if (favorite != null && favorite.getPlace() != null && favorite.getPlace().getId() != null) {
+            if (favorite.getPlace().getId() != null) {
                 String placeId = favorite.getPlace().getId();
                 averageInteractions.put(placeId, interactionService.averageInteraction(placeId));
             }
@@ -137,7 +169,6 @@ public class PageController {
         model.addAttribute("user", userOpt.get());
         model.addAttribute("favorites", favorites);
         model.addAttribute("averageInteractions", averageInteractions);
-        return "favourites";
     }
 
     @GetMapping("/profile")

@@ -470,11 +470,12 @@ body.theme-page {
 
 .places-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 260px));
     gap: 1.5rem;
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    justify-content: center;
 }
 
 @media (max-width: 576px) {
@@ -485,25 +486,25 @@ body.theme-page {
 
 @media (min-width: 577px) and (max-width: 768px) {
     .places-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
     }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .places-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(250px, 250px));
     }
 }
 
 @media (min-width: 1025px) and (max-width: 1400px) {
     .places-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(260px, 260px));
     }
 }
 
 @media (min-width: 1401px) {
     .places-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(260px, 260px));
     }
 }
 
@@ -688,10 +689,13 @@ body.theme-page {
 }
 
 .place-page .similar-places-scroll {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 260px;
     gap: 1.5rem;
     overflow-x: auto;
-    padding-bottom: 1rem;
+    align-items: stretch;
+    padding: 0 0 1rem;
     scroll-behavior: smooth;
 }
 
@@ -714,20 +718,28 @@ body.theme-page {
 }
 
 .place-page .similar-place-card {
-    flex: 0 0 280px;
-    min-width: 280px;
+    width: 260px;
+    min-width: 0;
+}
+
+.place-page .similar-place-card .col {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 auto;
+    padding: 0;
+}
+
+.place-page .similar-place-card .tourism-place-card {
+    width: 100%;
 }
 
 .place-page .similar-place-link {
-    text-decoration: none;
-    color: inherit;
     display: block;
     height: 100%;
     transition: all 0.3s ease;
 }
 
 .place-page .similar-place-link:hover {
-    text-decoration: none;
     color: inherit;
 }
 
@@ -772,8 +784,11 @@ body.theme-page {
     }
 
     .place-page .similar-place-card {
-        flex: 0 0 250px;
-        min-width: 250px;
+        width: 240px;
+    }
+
+    .place-page .similar-places-scroll {
+        grid-auto-columns: 240px;
     }
 }
 

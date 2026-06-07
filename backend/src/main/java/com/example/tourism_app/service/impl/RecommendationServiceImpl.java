@@ -28,20 +28,37 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public List<Place> getContentBasedRecommendations(String placeId) {
+        RecommendationResponse response = fetchRecommendations("/recommend", "place_id", placeId);
+
+        return toPlaces(response);
+    }
+
+    @Override
+    public List<Place> getCollaborativeRecommendations(String userId) {
+        RecommendationResponse response = fetchRecommendations("/recommend_collab", "user_id", userId);
+
+        return toPlaces(response);
+    }
+
+    private RecommendationResponse fetchRecommendations(String path, String queryParam, String value) {
         RecommendationResponse response;
 
         try {
             response = restClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/recommend")
-                            .queryParam("place_id", placeId)
+                            .path(path)
+                            .queryParam(queryParam, value)
                             .build())
                     .retrieve()
                     .body(RecommendationResponse.class);
         } catch (RestClientException ex) {
-            return Collections.emptyList();
+            return null;
         }
 
+        return response;
+    }
+
+    private List<Place> toPlaces(RecommendationResponse response) {
         if (response == null || response.getRecommendations() == null) {
             return Collections.emptyList();
         }

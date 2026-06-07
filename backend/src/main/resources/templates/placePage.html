@@ -141,9 +141,9 @@
                 <div class="similar-places-scroll">
                     <th:block th:each="place : ${similarPlaces}">
                         <div class="similar-place-card" th:if="${place != null}">
-                            <a th:href="@{/places/{id}(id=${place.id})}" class="similar-place-link">
+                            <div class="similar-place-link">
                                 <div th:replace="~{fragments/placeBox :: placeBox(${place})}"></div>
-                            </a>
+                            </div>
                         </div>
                     </th:block>
                 </div>
