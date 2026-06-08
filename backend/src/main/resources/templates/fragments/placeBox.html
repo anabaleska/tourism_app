@@ -119,7 +119,7 @@
                     <span th:text="${placeTimeToVisit}">0</span> min
                 </div>
 
-                <div th:if="${userInteractions.get(placeId) != null}">
+                <div th:if="${userInteractions != null and userInteractions.get(placeId) != null}">
                     <i class="bi bi-hash me-1"></i>
                     Your interaction:
                     <span th:text="${userInteractions.get(placeId)}">UUID</span>

@@ -1,4 +1,3 @@
-import sqlite3
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -6,8 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Recommender:
 
-    def __init__(self, db_path):
-        with sqlite3.connect(db_path) as conn:
+    def __init__(self, db_engine):
+        with db_engine.connect() as conn:
             self.df = pd.read_sql_query(
                 "SELECT place_id, name, model_text FROM places",
                 conn
@@ -15,16 +14,19 @@ class Recommender:
 
         self.df["model_text"] = self.df["model_text"].fillna("")
 
+        if self.df.empty or self.df["model_text"].str.strip().eq("").all():
+            self.tag_matrix = None
+            self.cos_sim = None
+            self.id_to_index = {}
+            return
+
         tfidf = TfidfVectorizer()
-
         self.tag_matrix = tfidf.fit_transform(self.df["model_text"])
-
         self.cos_sim = cosine_similarity(self.tag_matrix, self.tag_matrix)
-
         self.id_to_index = pd.Series(self.df.index, index=self.df["place_id"]).to_dict()
 
     def recommend(self, place_id, top_n=5):
-        if place_id not in self.id_to_index:
+        if place_id not in self.id_to_index or self.cos_sim is None:
             return []
 
         idx = self.id_to_index[place_id]

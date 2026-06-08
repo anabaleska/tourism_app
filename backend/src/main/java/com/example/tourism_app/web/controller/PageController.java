@@ -140,16 +140,19 @@ public class PageController {
                 .toList();
 
         Map<String, Double> averageInteractions = new HashMap<>();
+        Map<String, Integer> userInteractions = new HashMap<>();
         for (Interaction favorite : favorites) {
             if (favorite.getPlace().getId() != null) {
                 String placeId = favorite.getPlace().getId();
                 averageInteractions.put(placeId, interactionService.averageInteraction(placeId));
+                userInteractions.put(placeId, favorite.getInteraction());
             }
         }
 
         model.addAttribute("user", userOpt.get());
         model.addAttribute("favorites", favorites);
         model.addAttribute("averageInteractions", averageInteractions);
+        model.addAttribute("userInteractions", userInteractions);
     }
 
     private void addPlaceInteractionModel(Place place, Model model) {

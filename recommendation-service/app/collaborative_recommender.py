@@ -1,22 +1,24 @@
-import sqlite3
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
 class CollaborativeRecommender:
 
-    def __init__(self, db_path, interactions_table="interactions"):
-        conn = sqlite3.connect(db_path)
-        self.places_df = pd.read_sql_query(
-            "SELECT place_id, name, category, municipality FROM places",
-            conn
-        ).set_index("place_id")
+    def __init__(self, db_engine, interactions_table="interactions"):
+        with db_engine.connect() as conn:
+            self.places_df = pd.read_sql_query(
+                "SELECT place_id, name, category, municipality FROM places",
+                conn
+            ).set_index("place_id")
 
-        interactions_df = pd.read_sql_query(
-            f"SELECT user_id, place_id, interaction FROM {interactions_table}",
-            conn
-        )
+            interactions_df = pd.read_sql_query(
+                f"SELECT user_id, place_id, interaction FROM {interactions_table}",
+                conn
+            )
 
-        conn.close()
+        if interactions_df.empty:
+            self.user_item_matrix = pd.DataFrame()
+            self.item_similarity_df = pd.DataFrame()
+            return
 
         user_item_matrix = interactions_df.pivot_table(
             index="user_id",
@@ -27,6 +29,10 @@ class CollaborativeRecommender:
         self.user_item_matrix = user_item_matrix
 
         item_user_matrix = user_item_matrix.T
+        if item_user_matrix.empty:
+            self.item_similarity_df = pd.DataFrame()
+            return
+
         item_similarity = cosine_similarity(item_user_matrix)
         self.item_similarity_df = pd.DataFrame(
             item_similarity,
@@ -35,7 +41,7 @@ class CollaborativeRecommender:
         )
 
     def recommend(self, user_id, top_n=5, similarity_threshold=0.2):
-        if user_id not in self.user_item_matrix.index:
+        if self.user_item_matrix.empty or user_id not in self.user_item_matrix.index:
             return []
 
         user_likes = self.user_item_matrix.loc[user_id]
