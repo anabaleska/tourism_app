@@ -26,10 +26,10 @@
                  th:src="${placeImageUrl}"
                  th:alt="${placeName}"
                  class="card-img-top"
+                 onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');"
                  style="height: 220px; object-fit: cover;"/>
 
-            <div th:if="${placeImageUrl == ''}"
-                 class="d-flex align-items-center justify-content-center bg-light text-secondary"
+            <div th:class="${placeImageUrl == ''} ? 'd-flex align-items-center justify-content-center bg-light text-secondary' : 'd-none align-items-center justify-content-center bg-light text-secondary'"
                  style="height: 220px;">
                 <div class="text-center">
                     <i class="bi bi-image fs-1"></i>

@@ -28,10 +28,10 @@
                     <img th:if="${place.imageUrl != null and !#strings.isEmpty(place.imageUrl)}"
                          th:src="${place.imageUrl}"
                          th:alt="${place.name}"
+                         onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');"
                          class="place-detail-image"/>
 
-                    <div th:if="${place.imageUrl == null or #strings.isEmpty(place.imageUrl)}"
-                         class="place-detail-image-placeholder">
+                    <div th:class="${place.imageUrl == null or #strings.isEmpty(place.imageUrl)} ? 'place-detail-image-placeholder' : 'place-detail-image-placeholder d-none'">
                         <div class="text-center">
                             <i class="bi bi-image fs-1 mb-2"></i>
                             <div>No image available</div>
@@ -124,7 +124,7 @@
 
                     <div class="detail-actions">
                         <a th:href="@{/places/{id}/recommendations(id=${place.id})}"
-                           class="btn btn-primary">
+                           class="btn recommendation-action-btn">
                             <i class="bi bi-stars me-2"></i>Recommend me similar places
                         </a>
 
