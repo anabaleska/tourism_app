@@ -194,6 +194,7 @@ body.theme-page {
     font-family: "Segoe UI", "Poppins", system-ui, -apple-system, sans-serif;
     background-color: var(--auth-bg);
     color: #3f3f3f;
+    scroll-behavior: smooth;
 }
 
 .page-shell {
@@ -415,6 +416,76 @@ body.theme-page {
     padding: 6px 14px;
     font-weight: 700;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.recommendation-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 52px;
+    padding: 0.85rem 1.35rem;
+    border: 1px solid #b06f3d;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #c57c47, #8c5f45);
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    box-shadow: 0 12px 24px rgba(140, 95, 69, 0.24);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.recommendation-action-btn i {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recommendation-action-btn:hover,
+.recommendation-action-btn:focus {
+    color: #ffffff;
+    border-color: #8c5f45;
+    background: linear-gradient(135deg, #b06f3d, #7a523b);
+    box-shadow: 0 16px 30px rgba(140, 95, 69, 0.32);
+    transform: translateY(-2px);
+}
+
+.recommendation-action-btn:focus-visible {
+    outline: 3px solid rgba(197, 124, 71, 0.35);
+    outline-offset: 3px;
+}
+
+.recommendation-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.recommendations-result-section {
+    scroll-margin-top: 28px;
+}
+
+.recommendations-result-panel {
+    background: #fffaf6;
+    border: 1px solid #ead8c9;
+    border-left: 6px solid #c57c47;
+    border-radius: 24px;
+    box-shadow: 0 18px 36px rgba(140, 95, 69, 0.16);
+    padding: 2rem;
+}
+
+.recommendations-result-copy {
+    margin: 0.35rem 0 0;
+    color: #8c7568;
+    font-weight: 600;
 }
 
 .home-page .place-card-wrapper {
@@ -839,6 +910,14 @@ body.theme-page {
     .place-page .interaction-inline-form,
     .place-page .interaction-submit-btn,
     .place-page .interaction-input {
+        width: 100%;
+    }
+
+    .recommendation-action-btn {
+        white-space: normal;
+    }
+
+    .recommendation-action-row .recommendation-action-btn {
         width: 100%;
     }
 

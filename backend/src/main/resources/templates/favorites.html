@@ -35,39 +35,53 @@
                     </th:block>
                 </div>
 
-                <a th:href="@{/favorites/recommendations}"
-                   class="btn btn-primary mt-4"
-                   th:if="${favorites != null and !#lists.isEmpty(favorites)}">
-                    <i class="bi bi-people-fill me-2"></i>Others also liked
-                </a>
+                <div class="recommendation-action-row"
+                     th:if="${favorites != null and !#lists.isEmpty(favorites)}">
+                    <a th:href="@{/favorites/recommendations#others-also-liked}"
+                       class="btn recommendation-action-btn">
+                        <i class="bi bi-people-fill me-2"></i>Others also liked
+                    </a>
+                </div>
+
             </div>
         </section>
 
-        <section class="profile-section"
+        <section id="others-also-liked"
+                 class="profile-section recommendations-result-section"
                  th:if="${collaborativeRecommendations != null and !#lists.isEmpty(collaborativeRecommendations)}">
             <div class="container">
-                <div class="section-heading">
-                    <h2 class="section-title">Others also liked</h2>
-                    <span class="section-pill"
-                          th:text="${#lists.size(collaborativeRecommendations)} + ' places'">0 places</span>
-                </div>
-
-                <div class="places-grid">
-                    <th:block th:each="place : ${collaborativeRecommendations}">
-                        <div th:if="${place != null}" class="place-card-wrapper">
-                            <div th:replace="~{fragments/placeBox :: placeBox(${place})}"></div>
+                <div class="recommendations-result-panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2 class="section-title">Others also liked</h2>
+                            <p class="recommendations-result-copy">
+                                Places recommended from users with similar interactions.
+                            </p>
                         </div>
-                    </th:block>
+                        <span class="section-pill"
+                              th:text="${#lists.size(collaborativeRecommendations)} + ' places'">0 places</span>
+                    </div>
+
+                    <div class="places-grid">
+                        <th:block th:each="place : ${collaborativeRecommendations}">
+                            <div th:if="${place != null}" class="place-card-wrapper">
+                                <div th:replace="~{fragments/placeBox :: placeBox(${place})}"></div>
+                            </div>
+                        </th:block>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="profile-section"
+        <section id="others-also-liked"
+                 class="profile-section recommendations-result-section"
                  th:if="${collaborativeRecommendationsRequested == true and (collaborativeRecommendations == null or #lists.isEmpty(collaborativeRecommendations))}">
             <div class="container">
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-1"></i>
-                    No collaborative recommendations found yet.
+                <div class="recommendations-result-panel">
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        No collaborative recommendations found yet.
+                    </div>
                 </div>
             </div>
         </section>

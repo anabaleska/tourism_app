@@ -10,6 +10,8 @@ import com.example.tourism_app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +40,8 @@ public class PageController {
         //      list places
 //        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
 //        user.ifPresent(userBap -> model.addAttribute("user", userBap));
-        java.util.List<Place> allPlaces = placeService.listPlaces();
+        java.util.List<Place> allPlaces = new ArrayList<>(placeService.listPlaces());
+        Collections.shuffle(allPlaces);
 
         // Calculate pagination
         int totalPlaces = allPlaces.size();
