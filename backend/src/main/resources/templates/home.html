@@ -26,6 +26,32 @@
                 <h2 class="section-title">Explore Places</h2>
                 <span class="section-pill" th:if="${totalPlaces != null}" th:text="${totalPlaces} + ' places'">0 places</span>
             </div>
+            <form action="/home" method="get">
+                <div th:if="${filterOptions != null}" class="section-heading">
+<!--                    <span class="section-pill">Filter Places</span>-->
+                    <th:block th:each="filter : ${filterOptions}">
+                        <div th:if="${filter.getValue() != null}">
+                            <label th:for="${filter.getKey()}"
+                                   th:text="${filter.getKey()}">
+                            </label>
+
+                            <select th:name="${filter.getKey()}"
+                                    th:id="${filter.getKey()}">
+
+                                <option value="" selected></option>
+
+                                <option th:each="option : ${filter.getValue()}"
+                                        th:value="${option}"
+                                        th:text="${option}">
+                                </option>
+                            </select>
+                        </div>
+                    </th:block>
+                    <button type="submit">Filter</button>
+                </div>
+
+            </form>
+
 
             <div class="alert alert-info" th:if="${places == null or #lists.isEmpty(places)}">
                 <i class="bi bi-info-circle me-1"></i>

@@ -5,9 +5,7 @@ import com.example.tourism_app.repository.jpa.PlaceRepositoryJpa;
 import com.example.tourism_app.service.PlaceService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PlaceServiceImpl implements PlaceService {
@@ -60,5 +58,28 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public List<Place> listPlaces() {
         return placeRepositoryJpa.findAll();
+    }
+
+    @Override
+    public List<Place> listPlacesByNameContaining(String search) {
+        return placeRepositoryJpa.getPlacesByNameContaining(search);
+    }
+
+    @Override
+    public List<Place> listFilteredPlaces(String type, String category, String municipality, String tag) {
+        return placeRepositoryJpa.findFilteredPlaces(type, category, municipality, tag);
+    }
+
+    @Override
+    public Map<String, List<String>> getAllFilterOptions() {
+        List<Place> allPlaces = placeRepositoryJpa.findAll();
+        Map<String, List<String>> filterOptions = new HashMap<>();
+
+        filterOptions.put("categories", allPlaces.stream().map(Place::getCategory).distinct().toList());
+        filterOptions.put("municipalities", allPlaces.stream().map(Place::getMunicipality).distinct().toList());
+        filterOptions.put("types", allPlaces.stream().map(Place::getType).distinct().toList());
+        filterOptions.put("tags", allPlaces.stream().map(Place::getTags).distinct().toList());
+
+        return filterOptions;
     }
 }
