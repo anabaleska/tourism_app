@@ -89,6 +89,13 @@
                         </form>
                     </div>
                 </div>
+
+                <form action="/logout" method="post" class="profile-logout-form">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="profile-button logout-button">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </button>
+                </form>
             </div>
         </section>
     </main>

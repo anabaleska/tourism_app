@@ -313,7 +313,7 @@ body.theme-page {
     font-weight: 600;
 }
 
-.profile-link {
+.-link {
     text-decoration: none;
 }
 
@@ -1218,6 +1218,12 @@ body.theme-page {
     flex-wrap: wrap;
 }
 
+.profile-logout-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
 .profile-button {
     border: none;
     border-radius: 14px;
@@ -1234,4 +1240,13 @@ body.theme-page {
 .profile-button.secondary {
     background-color: #d4c8bf;
     color: #5a5a5a;
+}
+
+.profile-button.logout-button {
+    background-color: #8c5f45;
+}
+
+.profile-button.logout-button:hover {
+    background-color: #734d38;
+    color: #ffffff;
 }
