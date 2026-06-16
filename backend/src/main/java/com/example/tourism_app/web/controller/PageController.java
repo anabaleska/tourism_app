@@ -10,7 +10,6 @@ import com.example.tourism_app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
@@ -36,11 +35,26 @@ public class PageController {
     }
 
     @RequestMapping({ "/home", "/" })
-    public String home(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
-        //      list places
+    public String home(@RequestParam(value = "page", defaultValue = "1") int page,
+                       @RequestParam(required = false) String search,
+                       @RequestParam(required = false) Map<String, String> allParams,
+                       Model model) {
 //        Optional<User> user = userService.getUserById(userService.getCurrentUserId());
 //        user.ifPresent(userBap -> model.addAttribute("user", userBap));
-        java.util.List<Place> allPlaces = new ArrayList<>(placeService.listPlaces());
+        List<Place>  allPlaces;
+        Map<String, List<String>> filterOptions = placeService.getAllFilterOptions();
+
+        if(search != null){
+            allPlaces = placeService.listPlacesByNameContaining(search);
+        } else{
+            if(allParams != null){
+                allPlaces = placeService.listFilteredPlaces(allParams.get("types"), allParams.get("categories"),
+                        allParams.get("municipalities"), allParams.get("tags"));
+            } else {
+                allPlaces = placeService.listPlaces();
+            }
+        }
+
         Collections.shuffle(allPlaces);
 
         // Calculate pagination
@@ -49,7 +63,7 @@ public class PageController {
         int startIndex = (page - 1) * PLACES_PER_PAGE;
         int endIndex = Math.min(startIndex + PLACES_PER_PAGE, totalPlaces);
 
-        java.util.List<Place> paginatedPlaces = allPlaces.subList(startIndex, endIndex);
+        List<Place> paginatedPlaces = allPlaces.subList(startIndex, endIndex);
 
         List<Interaction> userInteractedPlaces = interactionService.findAllUserInteractions(userService.getCurrentUserId());
 
@@ -61,6 +75,7 @@ public class PageController {
                 ));
 
         model.addAttribute("places", paginatedPlaces);
+        model.addAttribute("filterOptions", filterOptions);
         model.addAttribute("userInteractions", personalPlaceRatings);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
