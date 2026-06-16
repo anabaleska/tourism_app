@@ -28,7 +28,7 @@ body.auth-page {
 
 .auth-hero {
     background-color: var(--auth-hero-bg);
-    background-image: var(--auth-hero-image);
+    background-image: url("images/LandingPage.png");
     background-size: cover;
     background-position: center;
     padding: 48px 56px;
@@ -51,12 +51,20 @@ body.auth-page {
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
+    background-image: url("images/miniLogo.png");
+    background-size: cover;
+    background-position: center;
     color: #8c5f45;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
+}
+
+.auth-brand-mark img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
 }
 
 .auth-hero h1 {
@@ -238,7 +246,9 @@ body.theme-page {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
+    background-image: url("images/miniLogo.png");
+    background-size: cover;
+    background-position: center;
     color: #8c5f45;
     display: inline-flex;
     align-items: center;
@@ -363,7 +373,9 @@ body.theme-page {
 }
 
 .home-hero {
-    background-color: var(--auth-hero-bg);
+    background-image: url("images/LandingPage.png");
+    background-size: cover;
+    background-position: center;
     color: var(--auth-hero-text);
     padding: 48px 0;
 }

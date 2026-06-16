@@ -95,18 +95,6 @@
                             </div>
                             <div class="stat-value" th:text="${place.timeToVisit} + ' min'">120 min</div>
                         </div>
-
-                        <div class="stat-item" th:if="${place.id != null}">
-                            <div class="stat-label">
-                                <i class="bi bi-hash me-1"></i>Place ID
-                            </div>
-                            <div class="stat-value"
-                                 style="font-size: 0.9rem; word-break: break-all;"
-                                 th:text="${place.id}">
-                                UUID
-                            </div>
-                        </div>
-
                     </div>
 
                     <!-- Description -->
