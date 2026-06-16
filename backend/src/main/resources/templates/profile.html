@@ -37,28 +37,6 @@
         <section class="profile-section">
             <div class="container">
                 <div class="section-heading">
-                    <h2 class="section-title">Favorite places</h2>
-                    <span class="section-pill" th:if="${favorites != null}" th:text="${#lists.size(favorites)} + ' places'">0 places</span>
-                </div>
-
-                <div class="alert alert-info" th:if="${favorites == null or #lists.isEmpty(favorites)}">
-                    <i class="bi bi-info-circle me-1"></i>
-                    No favorite places yet.
-                </div>
-
-                <div class="places-grid" th:if="${favorites != null and !#lists.isEmpty(favorites)}">
-                    <th:block th:each="favorite : ${favorites}">
-                        <a th:if="${favorite.place != null}" th:href="@{/places/{id}(id=${favorite.place.id})}" class="place-card-wrapper">
-                            <div th:replace="~{fragments/placeBox :: placeBox(${favorite.place})}"></div>
-                        </a>
-                    </th:block>
-                </div>
-            </div>
-        </section>
-
-        <section class="profile-section">
-            <div class="container">
-                <div class="section-heading">
                     <h2 class="section-title">Settings</h2>
                 </div>
 

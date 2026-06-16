@@ -128,12 +128,10 @@
                             <i class="bi bi-stars me-2"></i>Recommend me similar places
                         </a>
 
-                        <form th:if="${authenticated == true}"
+                        <form th:if="${authenticated == true and currentInteraction == null}"
                               class="interaction-inline-form"
                               method="post"
-                              th:action="${currentInteraction != null}
-                                  ? @{/updateInteraction/{interactionId}(interactionId=${currentInteraction.id})}
-                                  : @{/addInteraction/{interactionId}(interactionId=0)}">
+                              th:action="@{/favorites/add}">
 
                             <input type="hidden"
                                    name="placeId"
@@ -143,31 +141,17 @@
                                    name="redirectTo"
                                    th:value="@{/places/{id}(id=${place.id})}">
 
-                            <label class="interaction-input-label"
-                                   for="interactionInput">
-                                <span th:text="${#numbers.formatDecimal(averageInteraction, 1, 1)}">0.0</span>
-                                avg
-                            </label>
-
-                            <input type="number"
-                                   id="interactionInput"
-                                   class="form-control interaction-input"
-                                   name="interaction"
-                                   min="1"
-                                   step="1"
-                                   required
-                                   th:value="${currentInteraction != null ? currentInteraction.interaction : ''}"
-                                   placeholder="Your score">
-
                             <button type="submit"
-                                    class="btn interaction-submit-btn"
-                                    th:classappend="${currentInteraction != null} ? ' btn-warning' : ' btn-success'">
-                                <i th:class="${currentInteraction != null} ? 'bi bi-pencil-square me-1' : 'bi bi-plus-circle me-1'"></i>
-                                <span th:text="${currentInteraction != null} ? 'Update interaction' : 'Add interaction'">
-                                    Add interaction
-                                </span>
+                                    class="btn interaction-submit-btn btn-success">
+                                <i class="bi bi-heart-fill me-1"></i>
+                                <span>Add to favorites</span>
                             </button>
                         </form>
+
+                        <span th:if="${authenticated == true and currentInteraction != null}"
+                              class="favorite-status-pill">
+                            <i class="bi bi-heart-fill me-1"></i>Added to favorites
+                        </span>
 
                         <a th:if="${authenticated != true}"
                            th:href="@{/login}"

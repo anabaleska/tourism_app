@@ -26,30 +26,47 @@
                 <h2 class="section-title">Explore Places</h2>
                 <span class="section-pill" th:if="${totalPlaces != null}" th:text="${totalPlaces} + ' places'">0 places</span>
             </div>
-            <form action="/home" method="get">
-                <div th:if="${filterOptions != null}" class="section-heading">
-<!--                    <span class="section-pill">Filter Places</span>-->
-                    <th:block th:each="filter : ${filterOptions}">
-                        <div th:if="${filter.getValue() != null}">
-                            <label th:for="${filter.getKey()}"
-                                   th:text="${filter.getKey()}">
-                            </label>
-
-                            <select th:name="${filter.getKey()}"
-                                    th:id="${filter.getKey()}">
-
-                                <option value="" selected></option>
-
-                                <option th:each="option : ${filter.getValue()}"
-                                        th:value="${option}"
-                                        th:text="${option}">
-                                </option>
-                            </select>
-                        </div>
-                    </th:block>
-                    <button type="submit">Filter</button>
+            <form action="/home" method="get"
+                  class="filters-panel"
+                  th:if="${filterOptions != null}">
+                <div class="filters-panel__header">
+                    <a th:href="@{/home}" class="filters-panel__reset">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Clear
+                    </a>
                 </div>
 
+                <div class="filters-grid">
+                    <th:block th:each="filter : ${filterOptions}">
+                        <div th:if="${filter.getValue() != null}" class="filter-field">
+                            <label class="filter-label"
+                                   th:for="${filter.getKey()}"
+                                   th:text="${#strings.capitalize(filter.getKey())}">
+                            </label>
+
+                            <div class="filter-select-wrap">
+                                <select class="filter-select"
+                                        th:name="${filter.getKey()}"
+                                        th:id="${filter.getKey()}">
+
+                                    <option value="">All</option>
+
+                                    <option th:each="option : ${filter.getValue()}"
+                                            th:value="${option}"
+                                            th:text="${option}"
+                                            th:selected="${selectedFilters != null and selectedFilters[filter.getKey()] == option}">
+                                    </option>
+                                </select>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+
+                <div class="filters-panel__actions">
+                    <button type="submit" class="filters-submit">
+                        <i class="bi bi-funnel-fill me-2"></i>Filter places
+                    </button>
+                </div>
             </form>
 
 

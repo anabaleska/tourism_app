@@ -30,11 +30,21 @@ public class InteractionController {
     }
 
 
-    //
+    @PostMapping("/favorites/add")
+    public String addFavorite(@RequestParam String placeId,
+                              @RequestParam(required = false) String redirectTo) {
+        if (placeId == null || placeId.isBlank()) {
+            throw new IllegalArgumentException("placeId is required");
+        }
+
+        interactionService.createInteraction(requireCurrentUserId(), placeId, 1);
+        return redirectTo(redirectTo);
+    }
+
     @PostMapping("/addInteraction/{interactionId}")
     public String addInteraction(Model model,
                                  @RequestParam String placeId,
-                                 @RequestParam Integer interaction,
+                                 @RequestParam(required = false, defaultValue = "1") Integer interaction,
                                  @RequestParam(required = false) String redirectTo,
                                  @PathVariable Long interactionId) {
         if (interactionId == null || interactionId < 0) {
@@ -42,9 +52,6 @@ public class InteractionController {
         }
         if (placeId == null || placeId.isBlank()) {
             throw new IllegalArgumentException("placeId is required");
-        }
-        if (interaction == null) {
-            throw new IllegalArgumentException("interaction is required");
         }
         interactionService.createInteraction(requireCurrentUserId(), placeId, interaction);
         return redirectTo(redirectTo);

@@ -76,6 +76,7 @@ public class PageController {
 
         model.addAttribute("places", paginatedPlaces);
         model.addAttribute("filterOptions", filterOptions);
+        model.addAttribute("selectedFilters", allParams);
         model.addAttribute("userInteractions", personalPlaceRatings);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
