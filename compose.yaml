@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:17.4
+    environment:
+      POSTGRES_DB: tourism_app_db
+      POSTGRES_USER: tourismAppDb
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - tourism_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tourismAppDb -d tourism_app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    image: tourism-backend:local
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tourism_app_db
+      SPRING_DATASOURCE_USERNAME: tourismAppDb
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      RECOMMENDATION_SERVICE_BASE_URL: http://recommendations:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:8080/login > /dev/null || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    restart: unless-stopped
+
+  recommendations:
+    build:
+      context: ./recommendation-service
+    image: tourism-recommendations:local
+    environment:
+      DATABASE_URL: postgresql+psycopg2://tourismAppDb:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/tourism_app_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/', timeout=3)" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  tourism_pgdata:
