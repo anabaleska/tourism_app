@@ -1,0 +1,13 @@
+providers:
+  kubernetesIngress:
+    enabled: true
+  kubernetesCRD:
+    enabled: false
+
+ingressClass:
+  enabled: true
+  isDefaultClass: false
+  name: traefik
+
+service:
+  type: LoadBalancer
